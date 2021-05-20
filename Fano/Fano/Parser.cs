@@ -1,23 +1,19 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 
 namespace Fano
 {
-    public class FanoParser
+    public class Parser
     {
-        private FileStream readableFile;
+        private readonly FileStream readableFile;
         private List<WordFrequency> frequencyList;
-        private int wordSizeInBits;
+        private readonly int wordSizeInBits;
 
-        public FanoParser(string path, int wordSizeInBits)
+        public Parser(string path, int wordSizeInBits)
         {
             readableFile = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            
-            if ((2 <= wordSizeInBits) && (wordSizeInBits <= 16))
-            {
-                this.wordSizeInBits = wordSizeInBits;
-            }
+
+            this.wordSizeInBits = wordSizeInBits;
         }
 
         //separate buffer from parser?
@@ -30,7 +26,7 @@ namespace Fano
             get { return _bytesRead; }
         }
 
-        public void ReadChunk()
+        public void ReadBuffer()
         {
             _bytesRead = readableFile.Read(buffer, 0, buffer.Length);        
         }
@@ -55,28 +51,12 @@ namespace Fano
             get { return _bitLocationInArray;  }
         }
 
-        public bool CompareBits(WordFrequency bitArray1, WordFrequency bitArray2)
-        {
-            bool isEqual = true;
-
-            for (int i = 0; i < wordSizeInBits; i++)
-            {
-                if (bitArray1.Word[i] != bitArray2.Word[i])
-                {
-                    isEqual = false;
-                    break;
-                }
-            }
-
-            return isEqual;
-        }
-
         public void ParseFile()
         {
             frequencyList = new List<WordFrequency>();
-            frequencyList.Add(new WordFrequency(wordSizeInBits));           
+            frequencyList.Add(new WordFrequency(wordSizeInBits));
 
-            ReadChunk();
+            ReadBuffer();
             while (BytesRead > 0)
             {
                 for (int i=0; i < BytesRead; i++)                {
@@ -90,12 +70,8 @@ namespace Fano
 
                     //Remainder size < K; set aside for later encryption.              
                 }
-                ReadChunk();
-
+                ReadBuffer();
             }
-            
-
-        }     
-        
+        } 
     }
 }

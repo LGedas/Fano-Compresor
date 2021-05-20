@@ -7,23 +7,14 @@ namespace Fano
     {
         //Program parameters. 
         private static readonly string path = @"C:\Users\Gedas\Desktop\GitProject\Fano\TestingFiles\test1.txt";
-        private const int wordSize = 16;
+        //bitsWordLenght between 2 and 16.
+        private const int bitsWordLenght = 16;
+        //mode: decode or encode.
 
         static void Main(string[] args)
         {                     
-            FanoParser parser = new FanoParser(path, wordSize);
-
-            parser.ParseFile();
-            for(int i=0; i<8; i++)
-            {
-                parser.SetBitLocation();
-                Console.WriteLine(parser.BitLocationInArray);
-            }
-            for (int i = 0; i < 8; i++)
-            {
-                parser.SetBitLocation();
-                Console.WriteLine(parser.BitLocationInArray );
-            }
+            Parser parser = new Parser(path, bitsWordLenght);           
+            
         }
     }
 }

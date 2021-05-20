@@ -1,21 +1,22 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Fano.Tests
 {
     [TestClass]
     public class Parser
     {
-        private readonly string path = @"C:\Users\Gedas\Desktop\GitProject\Fano\TestingFiles\test1.txt";
-        private readonly int wordSizeInBits = 3;
+        private const string path = @"C:\Users\Gedas\Desktop\GitProject\Fano\TestingFiles\test1.txt";
 
         [TestMethod]
-        public void FanoParser()
+        public void Constructor_FilePath_NotNull()
         {
-           FanoParser readableFile = new FanoParser(path, wordSizeInBits);          
-           Assert.IsNotNull(readableFile);
-        }
+            const int bitsWordLenght = 3;
 
+            Fano.Parser readableFile = new Fano.Parser(path, bitsWordLenght);
 
-  
+            Assert.IsNotNull(readableFile);
+        }       
     }
 }

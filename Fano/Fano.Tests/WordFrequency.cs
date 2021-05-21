@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections;
 
-
 namespace Fano.Tests
 {
     [TestClass]
@@ -20,12 +19,14 @@ namespace Fano.Tests
         [TestMethod]
         public void Constructor_BitWord101_SetsCorectProperty()
         {
-            BitArray expectedBits = new BitArray(values: new[] { true, false, true }); 
+            int bitsWordSize = 3;
+            Fano.WordFrequency expected = new Fano.WordFrequency(bitsWordSize);
+            BitArray expectedBits = new BitArray(values: new[] { true, false, true });            
+            expected.Word = expectedBits;
+
             Fano.WordFrequency frequency = new Fano.WordFrequency(new BitArray(values: new[] { true, false, true }));
 
-            Assert.AreEqual(frequency.Word[0], expectedBits[0]);
-            Assert.AreEqual(frequency.Word[1], expectedBits[1]);
-            Assert.AreEqual(frequency.Word[2], expectedBits[2]);
+            Assert.IsTrue(Fano.Utilities.IsSequenceEqual(frequency, expected));
         }
 
         //test method writing practice, can be deleted.
@@ -53,6 +54,5 @@ namespace Fano.Tests
 
             Assert.AreEqual(frequency.Frequency, expected, errorMessage);
         }      
-
     }
 }

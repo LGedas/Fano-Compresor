@@ -13,8 +13,7 @@ namespace Fano
 
         static void Main(string[] args)
         {                     
-            Parser parser = new Parser(path, bitsWordLenght);           
-            
+            Parser parser = new Parser(path, bitsWordLenght);
         }
     }
 }

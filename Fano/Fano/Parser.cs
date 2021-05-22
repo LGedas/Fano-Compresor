@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Fano
 {
@@ -40,30 +41,15 @@ namespace Fano
             SetBitLocation();
         }
 
-        public void InsertWord()
+        public void TryInsertWord()
         {
-            if (frequencies.Count == 0)
+            var word = frequencies.FirstOrDefault(word => word == bitWord);
+            if (word != null)
             {
-                frequencies.Add(new WordFrequency(bitWord.Word));
-                return;
+                word.IncrementFrequency();
             }
 
-            int wordIndex = 0;
-            foreach (WordFrequency word in frequencies)
-            {
-                if (Utilities.IsSequenceEqual(word, bitWord))
-                {
-                    word.IncrementFrequency();
-                    break;
-                }
-
-                if (wordIndex == frequencies.Count)
-                {
-                    frequencies.Add(new WordFrequency(bitWord.Word));
-                }
-
-                wordIndex++;
-            }
+            frequencies.Add(new WordFrequency(bitWord.Word));
         }
 
         public void ParseByte(byte symbol)
@@ -74,7 +60,7 @@ namespace Fano
 
                 if (BitLocation == 0)
                 {
-                    InsertWord();
+                    TryInsertWord();
                 }
             }
         }

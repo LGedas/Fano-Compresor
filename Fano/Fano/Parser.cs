@@ -1,62 +1,65 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Fano
 {
     public class Parser
-    {
-        private readonly FileStream readableFile;
-        private const int bufferSize = 1024;
-        private byte[] buffer = new byte[bufferSize];
-        private int _bitLocation;
-        private readonly int wordSizeInBits;
+    {        
         private List<WordFrequency> frequencies;
         private WordFrequency bitWord;
-        private int _bytesRead;
-        const int bitsInByte = 8;
-
-        public Parser(string path, int wordSizeInBits)
+        private const int byteSize = 8;
+        private readonly int bitsWordSize;
+        private int _bitLocation;    
+        private readonly string path;
+        
+        public Parser(string path, int bitsWordSize)
         {
-            readableFile = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            this.wordSizeInBits = wordSizeInBits;
-            bitWord = new WordFrequency(wordSizeInBits);
+            this.path = path;
+            this.bitsWordSize = bitsWordSize;
+            bitWord = new WordFrequency(bitsWordSize);
+            frequencies = new List<WordFrequency>();
         }
 
-        public int BytesRead
+        public int BitLocation
         {
-            get { return _bytesRead; }
+            get { return _bitLocation; }
         }
 
-        public void ReadBuffer()
+        public void SetBitLocation()
         {
-            _bytesRead = readableFile.Read(buffer, 0, buffer.Length);        
+            _bitLocation = (_bitLocation + 1) % bitsWordSize;
         }
 
-        public void GetBit(byte symbol, int position)
+        public bool GetBit(byte byteFromFile, int position)
         {
-            bitWord.Word[BitLocation] = Convert.ToBoolean((Convert.ToInt32(symbol) >> (bitsInByte - 1 - position)) & 1);
+            return Convert.ToBoolean((Convert.ToInt32(byteFromFile) >> (byteSize - 1 - position)) & 1);
+        }
+
+        public void InsertBit(byte byteFromFile, int position)
+        {
+            bitWord.Word[BitLocation] = GetBit(byteFromFile, position);
             SetBitLocation();
         }
 
         public void TryInsertWord()
         {
-            var word = frequencies.FirstOrDefault(word => word == bitWord);
+            var word = frequencies.FirstOrDefault(word => Utilities.IsSequenceEqual(word, bitWord));
+
             if (word != null)
             {
                 word.IncrementFrequency();
+                return;
             }
 
             frequencies.Add(new WordFrequency(bitWord.Word));
         }
 
-        public void ParseByte(byte symbol)
+        public void ParseByte(byte byteFromFile)
         {
-            for (int i = 0; i < bitsInByte; i++)
+            for (int i = 0; i < byteSize; i++)
             {
-                GetBit(symbol, i);
+                InsertBit(byteFromFile, i);
 
                 if (BitLocation == 0)
                 {
@@ -65,33 +68,22 @@ namespace Fano
             }
         }
 
-        public void SetBitLocation()
+        public List<WordFrequency> getFrequencyTable()
         {
-            _bitLocation = (wordSizeInBits + _bitLocation - 1) % wordSizeInBits;
-        }
+            FileReader file = new FileReader(path);
+            byte[] bytes;
 
-        public int BitLocation
-        {            
-            get { return _bitLocation;  }
-        }
-
-        public void ParseFile()
-        {                     
-            ReadBuffer();
-            while (BytesRead > 0)
-            {
-                for (int i=0; i < BytesRead; i++)
+            bytes = file.Read();
+            while (0 < bytes.Length)
+            {             
+                foreach(byte byteFromFile in bytes)
                 {
-                    //Bit procesor, segment everything into 2-16 bits chunks.
-                    ParseByte(buffer[i]);                    
-
-                    //From bit Proscesor take wordSize bits
-                    //(Add new word and frequency++) or (frequency++).
-
-                    //Remainder size < K; set aside for later encryption.
+                    ParseByte(byteFromFile);
                 }
-                ReadBuffer();
+                bytes = file.Read();
             }
+
+            return frequencies;
         } 
     }
 }

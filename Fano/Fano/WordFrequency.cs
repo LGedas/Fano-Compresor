@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 
-
 namespace Fano
 {
     public class WordFrequency
@@ -35,7 +34,6 @@ namespace Fano
         {
             get { return _word; }
             set { _word = value; }
-        }
-        
+        }        
     }
 }

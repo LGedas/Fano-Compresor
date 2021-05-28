@@ -42,10 +42,14 @@ namespace Fano
             bitWord.Word[BitLocation] = GetBit(byteFromFile, position);
             SetBitLocation();
         }
+        public BitArray GetRemainingBits()
+        {
+            return bitWord.Word;
+        }
 
         public void TryInsertWord()
         {
-            var word = frequencies.FirstOrDefault(word => Utilities.IsSequenceEqual(word, bitWord));
+            WordFrequency word = frequencies.FirstOrDefault(word => Utilities.IsSequenceEqual(word, bitWord));
 
             if (word != null)
             {
@@ -71,28 +75,23 @@ namespace Fano
 
         public List<WordFrequency> getFrequencyTable()
         {
-            FileReader file = new FileReader(path);
-            byte[] bytes;
+            using (var file = new FileReader(path))
+            {
+                byte[] bytes;
 
-            bytes = file.Read();
-
-            while (0 < bytes.Length)
-            {             
-                foreach(byte byteFromFile in bytes)
-                {
-                    ParseByte(byteFromFile);
-                }
                 bytes = file.Read();
-            }
 
-            file.CloseFile();
-
-            return frequencies;
+                while (0 < bytes.Length)
+                {
+                    foreach (byte byteFromFile in bytes)
+                    {
+                        ParseByte(byteFromFile);
+                    }
+                    bytes = file.Read();
+                }
+            }   
+            
+            return frequencies;            
         } 
-
-        public BitArray GetRemainingBits()
-        {
-            return bitWord.Word;
-        }
     }
 }

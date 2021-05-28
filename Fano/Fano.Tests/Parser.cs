@@ -12,9 +12,9 @@ namespace Fano.Tests
         {
             TestFileManager.MakeFile("aaaabbbbccccddee");
             int bitsWordLenght = 8;
-            Parser parser = new Parser(TestFileManager.path, bitsWordLenght);
+            var parser = new Parser(TestFileManager.path, bitsWordLenght);
 
-            List<WordFrequency> expected = new List<WordFrequency>
+            var expected = new List<WordFrequency>
             {
                 new WordFrequency(new BitArray(new [] { false, true, true, false, false, false, false, true })),
                 new WordFrequency(new BitArray(new [] { false, true, true, false, false, false, true, false })),
@@ -39,7 +39,7 @@ namespace Fano.Tests
         {
             TestFileManager.MakeFile("aaaabbbbccccddee");
             int bitsWordLenght = 8;
-            Parser parser = new Parser(TestFileManager.path, bitsWordLenght);
+            var parser = new Parser(TestFileManager.path, bitsWordLenght);
             int[] expected = new int[] { 4, 4, 4, 2, 2 };
 
             List<WordFrequency> frequencies = parser.getFrequencyTable();

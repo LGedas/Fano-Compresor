@@ -5,18 +5,18 @@ using System.Collections;
 namespace Fano.Tests
 {
     [TestClass]
-    class UtilitiesTests
+    public class UtilitiesTest
     {
         [TestMethod]
         public void IsSequenceEqual_TwoSameListArrays_ReturnsTrue()
-        {        
+        {
             var frequencies = new List<WordFrequency>
             {
                 new WordFrequency(new BitArray(new[] { true, true, false })),
                 new WordFrequency(new BitArray(new[] { true, true, false })),
             };
 
-            Assert.IsTrue(Utilities.IsSequenceEqual(frequencies[0], frequencies[1]));
+            Assert.IsTrue(Fano.Utilities.IsSequenceEqual(frequencies[0], frequencies[1]));
         }
 
         [TestMethod]
@@ -25,7 +25,7 @@ namespace Fano.Tests
             var frequencies1 = new List<WordFrequency> { new WordFrequency(new BitArray(new[] { true, true, false })) };
             var frequencies2 = new List<WordFrequency> { new WordFrequency(new BitArray(new[] { true, true, false })) };
 
-            Assert.IsTrue(Utilities.IsSequenceEqual(frequencies1[0], frequencies2[1]));
+            Assert.IsTrue(Fano.Utilities.IsSequenceEqual(frequencies1[0], frequencies2[0]));
         }
     }
 }

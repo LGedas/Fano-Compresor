@@ -10,7 +10,7 @@ namespace Fano.Tests
         public void Constructor_WordSizeEquals3_setsCorrectWordLength()
         {
             const int bitsWordLenght = 3;
-            WordFrequency frequency = new WordFrequency(bitsWordLenght);
+            var frequency = new WordFrequency(bitsWordLenght);
             const string errorMessage = @"WordFrequency_Constructor: word lenght is not equal to given parameter";
 
             Assert.AreEqual(frequency.Word.Length, bitsWordLenght, errorMessage);
@@ -19,22 +19,22 @@ namespace Fano.Tests
         [TestMethod]
         public void Constructor_BitWord101_SetsCorectProperty()
         {
-            int bitsWordSize = 3;
-            WordFrequency expected = new WordFrequency(bitsWordSize);
-            expected.Word  = new BitArray(new[] { true, false, true });                      
+            const int bitsWordSize = 3;
+            var expected = new WordFrequency(bitsWordSize);
+            expected.Word = new BitArray(new[] { true, false, true });                      
 
-            WordFrequency frequency = new WordFrequency(new BitArray(new[] { true, false, true }));
+            var frequency = new WordFrequency(new BitArray(new[] { true, false, true }));
 
-            Assert.IsTrue(Utilities.IsSequenceEqual(frequency, expected));
+            Assert.IsTrue(Fano.Utilities.IsSequenceEqual(frequency, expected));
         }
 
         //test method writing practice, can be deleted.
         [TestMethod]
         public void Constructor_FrequencyEquals0_GetsCorrectProperty()
         {
-            int expected = 0;
+            const int expected = 0;
             const int bitsWordLenght = 3;
-            WordFrequency frequency = new WordFrequency(bitsWordLenght);
+            var frequency = new WordFrequency(bitsWordLenght);
             string errorMessage = @"WordFrequency_Constructor: Frequency default value is not 0";
             
             Assert.AreEqual(frequency.Frequency, expected, errorMessage);
@@ -46,7 +46,7 @@ namespace Fano.Tests
         {
             const int expected = 1;
             const int bitsWordLenght = 3;
-            WordFrequency frequency = new WordFrequency(bitsWordLenght);
+            var frequency = new WordFrequency(bitsWordLenght);
             string errorMessage = @"WordFrequency.IncrementFrequency: Frequency is not 1";
 
             frequency.IncrementFrequency();

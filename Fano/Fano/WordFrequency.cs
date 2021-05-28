@@ -9,13 +9,11 @@ namespace Fano
 
         public WordFrequency(int bitsWordSize)
         {
-            //bitsWordSize value between 2 and 16 to work properly.
             _word = new BitArray(bitsWordSize);
         }
 
         public WordFrequency(BitArray bitWord)
         {
-            //bitsWordSize value between 2 and 16 to work properly.
             _word = new BitArray(bitWord);
             IncrementFrequency();            
         }

@@ -4,29 +4,37 @@ using System.Linq;
 
 namespace Fano.Tests
 {
-    class FileReaderTests
+    [TestClass]
+    public class FileReaderTests
     {
         [TestMethod]
         public void Constructor_FilePath_NotNull()
         {
-            FileReader file = new FileReader(TestFileManager.path);
+            TestFileManager.MakeFile("a");
 
-            Assert.IsNotNull(file);
+            using (var file = new FileReader(TestFileManager.path)) 
+            {
+                Assert.IsNotNull(file);
+            }   
+
+            TestFileManager.DeleteFile();
         }
 
         [TestMethod]
         public void Read_File_16Symbols()
         {
-            TestFileManager.MakeFile("aaaabbbbccccddff");
             byte[] expexted = Encoding.UTF8.GetBytes("aaaabbbbccccddff");
-            var file = new FileReader(TestFileManager.path);
 
-            byte[] buffer = file.Read();
+            TestFileManager.MakeFile("aaaabbbbccccddff");            
 
-            file.CloseFile();
-            TestFileManager.DeleteFile();
-            
-            Assert.IsTrue(expexted.SequenceEqual(buffer));
+            using (var file = new FileReader(TestFileManager.path))
+            {
+                byte[] buffer = file.Read();
+
+                Assert.IsTrue(expexted.SequenceEqual(buffer));
+            }            
+
+            TestFileManager.DeleteFile();            
         }
     }
 }

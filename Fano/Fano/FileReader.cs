@@ -20,5 +20,9 @@ namespace Fano
             return buffer.Take(bytesRead).ToArray();
         }
 
+        public void CloseFile()
+        {
+            readableFile.Close();
+        }
     }
 }

@@ -7,13 +7,12 @@ namespace Fano.Tests
     [TestClass]
     public class ParserTests
     {
-        private const string path = @"C:\Users\Gedas\Desktop\GitProject\Fano\TestingFiles\test1.txt";
-
         [TestMethod]
         public void getFrequencyTable_File_abcde()
         {
+            TestFileManager.MakeFile("aaaabbbbccccddee");
             int bitsWordLenght = 8;
-            Parser parser = new Parser(path, bitsWordLenght);
+            Parser parser = new Parser(TestFileManager.path, bitsWordLenght);
 
             List<WordFrequency> expected = new List<WordFrequency>
             {
@@ -26,6 +25,8 @@ namespace Fano.Tests
 
             List<WordFrequency> frequencies = parser.getFrequencyTable();
 
+            TestFileManager.DeleteFile();
+
             Assert.IsTrue(Utilities.IsSequenceEqual(expected[0], frequencies[0]));
             Assert.IsTrue(Utilities.IsSequenceEqual(expected[1], frequencies[1]));
             Assert.IsTrue(Utilities.IsSequenceEqual(expected[2], frequencies[2]));
@@ -33,6 +34,23 @@ namespace Fano.Tests
             Assert.IsTrue(Utilities.IsSequenceEqual(expected[4], frequencies[4]));
         }
 
+        [TestMethod]
+        public void getFrequencyTable_File_44422()
+        {
+            TestFileManager.MakeFile("aaaabbbbccccddee");
+            int bitsWordLenght = 8;
+            Parser parser = new Parser(TestFileManager.path, bitsWordLenght);
+            int[] expected = new int[] { 4, 4, 4, 2, 2 };
 
+            List<WordFrequency> frequencies = parser.getFrequencyTable();
+
+            TestFileManager.DeleteFile();
+
+            Assert.AreEqual(expected[0], frequencies[0].Frequency);
+            Assert.AreEqual(expected[1], frequencies[1].Frequency);
+            Assert.AreEqual(expected[2], frequencies[2].Frequency);
+            Assert.AreEqual(expected[3], frequencies[3].Frequency);
+            Assert.AreEqual(expected[4], frequencies[4].Frequency);          
+        }
     }
 }

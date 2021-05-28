@@ -21,10 +21,9 @@ namespace Fano.Tests
         {
             int bitsWordSize = 3;
             WordFrequency expected = new WordFrequency(bitsWordSize);
-            BitArray expectedBits = new BitArray( new[] { true, false, true });            
-            expected.Word = expectedBits;
+            expected.Word  = new BitArray(new[] { true, false, true });                      
 
-            WordFrequency frequency = new WordFrequency( new BitArray(new[] { true, false, true }));
+            WordFrequency frequency = new WordFrequency(new BitArray(new[] { true, false, true }));
 
             Assert.IsTrue(Utilities.IsSequenceEqual(frequency, expected));
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 
 namespace Fano
@@ -74,6 +75,7 @@ namespace Fano
             byte[] bytes;
 
             bytes = file.Read();
+
             while (0 < bytes.Length)
             {             
                 foreach(byte byteFromFile in bytes)
@@ -83,7 +85,14 @@ namespace Fano
                 bytes = file.Read();
             }
 
+            file.CloseFile();
+
             return frequencies;
         } 
+
+        public BitArray GetRemainingBits()
+        {
+            return bitWord.Word;
+        }
     }
 }

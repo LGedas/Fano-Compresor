@@ -7,17 +7,21 @@ namespace Fano.Tests
     [TestClass]
     public class FileReaderTests
     {
+        [TestCleanup]
+        public void TestClean()
+        {
+            TestFileUtilities.DeleteFile();
+        }
+
         [TestMethod]
         public void Constructor_FilePath_NotNull()
         {
-            TestFileManager.MakeFile("a");
+            TestFileUtilities.MakeFile("a");
 
-            using (var file = new FileReader(TestFileManager.path)) 
+            using (var file = new FileReader(TestFileUtilities.path)) 
             {
                 Assert.IsNotNull(file);
-            }   
-
-            TestFileManager.DeleteFile();
+            }               
         }
 
         [TestMethod]
@@ -25,16 +29,14 @@ namespace Fano.Tests
         {
             byte[] expexted = Encoding.UTF8.GetBytes("aaaabbbbccccddff");
 
-            TestFileManager.MakeFile("aaaabbbbccccddff");            
+            TestFileUtilities.MakeFile("aaaabbbbccccddff");            
 
-            using (var file = new FileReader(TestFileManager.path))
+            using (var file = new FileReader(TestFileUtilities.path))
             {
                 byte[] buffer = file.Read();
 
                 Assert.IsTrue(expexted.SequenceEqual(buffer));
-            }            
-
-            TestFileManager.DeleteFile();            
+            }                         
         }
     }
 }

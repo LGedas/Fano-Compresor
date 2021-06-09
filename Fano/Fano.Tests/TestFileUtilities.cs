@@ -4,9 +4,9 @@ using System;
 
 namespace Fano.Tests
 {
-    static class TestFileManager
+    public static class TestFileUtilities
     {
-        public static readonly string path = @"C:\Users\Gedas\Desktop\GitProject\Fano\Fano.Tests\TempFiles\Temp_File.txt";
+        public const string path = @"C:\Users\Gedas\Desktop\GitProject\Fano\Fano.Tests\TempFiles\Temp_File.txt";
 
         public static void MakeFile(string fileText)
         { 

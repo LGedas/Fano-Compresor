@@ -19,13 +19,13 @@ namespace Fano.Tests
         [TestMethod]
         public void Constructor_BitWord101_SetsCorectProperty()
         {
-            const int bitsWordSize = 3;
-            var expected = new WordFrequency(bitsWordSize);
+            const int bitsWordLenght = 3;
+            var expected = new WordFrequency(bitsWordLenght);
             expected.Word = new BitArray(new[] { true, false, true });                      
 
             var frequency = new WordFrequency(new BitArray(new[] { true, false, true }));
 
-            Assert.IsTrue(Fano.Utilities.IsSequenceEqual(frequency, expected));
+            Assert.IsTrue(Utilities.IsSequenceEqual(frequency, expected));
         }
 
         //test method writing practice, can be deleted.

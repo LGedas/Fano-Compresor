@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-
-namespace Fano
+﻿namespace Fano
 {
     class Program
     {
@@ -13,8 +9,8 @@ namespace Fano
         //mode: decode or encode.
 
         static void Main(string[] args)
-        {                     
-            Parser parser = new Parser(path, bitsWordLenght);
+        {
+
         }
     }
 }

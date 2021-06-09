@@ -16,7 +16,7 @@ namespace Fano.Tests
                 new WordFrequency(new BitArray(new[] { true, true, false })),
             };
 
-            Assert.IsTrue(Fano.Utilities.IsSequenceEqual(frequencies[0], frequencies[1]));
+            Assert.IsTrue(Utilities.IsSequenceEqual(frequencies[0], frequencies[1]));
         }
 
         [TestMethod]
@@ -25,7 +25,7 @@ namespace Fano.Tests
             var frequencies1 = new List<WordFrequency> { new WordFrequency(new BitArray(new[] { true, true, false })) };
             var frequencies2 = new List<WordFrequency> { new WordFrequency(new BitArray(new[] { true, true, false })) };
 
-            Assert.IsTrue(Fano.Utilities.IsSequenceEqual(frequencies1[0], frequencies2[0]));
+            Assert.IsTrue(Utilities.IsSequenceEqual(frequencies1[0], frequencies2[0]));
         }
     }
 }

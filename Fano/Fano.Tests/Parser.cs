@@ -6,51 +6,90 @@ namespace Fano.Tests
 {
     [TestClass]
     public class ParserTests
-    {
-        [TestMethod]
-        public void getFrequencyTable_File_abcde()
+    {        
+        [TestCleanup]
+        public void TestClean()
         {
-            TestFileManager.MakeFile("aaaabbbbccccddee");
-            int bitsWordLenght = 8;
-            var parser = new Parser(TestFileManager.path, bitsWordLenght);
+            TestFileUtilities.DeleteFile();
+        }
 
-            var expected = new List<WordFrequency>
+        [TestMethod]
+        public void getFrequencyTable_wordSize8_CorrectTable()
+        {
+            TestFileUtilities.MakeFile("aaaabbbbccccddee");
+
+            int bitsWordLenght = 8;
+            var parser = new Parser(TestFileUtilities.path, bitsWordLenght);
+            var expected = new int[] { 4, 4, 4, 2, 2 };
+
+            var expectedBits = new List<WordFrequency>
             {
                 new WordFrequency(new BitArray(new [] { false, true, true, false, false, false, false, true })),
                 new WordFrequency(new BitArray(new [] { false, true, true, false, false, false, true, false })),
                 new WordFrequency(new BitArray(new [] { false, true, true, false, false, false, true, true })),
                 new WordFrequency(new BitArray(new [] { false, true, true, false, false, true, false, false })),
-                new WordFrequency(new BitArray(new [] { false, true, true, false, false, true, false, true })),
+                new WordFrequency(new BitArray(new [] { false, true, true, false, false, true, false, true }))
             };
 
             List<WordFrequency> frequencies = parser.getFrequencyTable();
 
-            TestFileManager.DeleteFile();
-
-            Assert.IsTrue(Utilities.IsSequenceEqual(expected[0], frequencies[0]));
-            Assert.IsTrue(Utilities.IsSequenceEqual(expected[1], frequencies[1]));
-            Assert.IsTrue(Utilities.IsSequenceEqual(expected[2], frequencies[2]));
-            Assert.IsTrue(Utilities.IsSequenceEqual(expected[3], frequencies[3]));
-            Assert.IsTrue(Utilities.IsSequenceEqual(expected[4], frequencies[4]));
+            Assert.IsTrue(TestUtils.AreWordsEqual(frequencies, expectedBits));
+            Assert.IsTrue(TestUtils.AreFrequenciesEqual(frequencies, expected));
         }
 
         [TestMethod]
-        public void getFrequencyTable_File_44422()
+        public void getFrequencyTable_wordSize4_CorrectTable()
         {
-            TestFileManager.MakeFile("aaaabbbbccccddee");
-            int bitsWordLenght = 8;
-            var parser = new Parser(TestFileManager.path, bitsWordLenght);
-            int[] expected = new int[] { 4, 4, 4, 2, 2 };
+            TestFileUtilities.MakeFile("aaaabbbbccccddee");
+
+            int bitsWordLenght = 4;
+            var parser = new Parser(TestFileUtilities.path, bitsWordLenght);
+            var expected = new int[] { 16, 4, 4, 4, 2, 2 };
+
+            var expectedBits = new List<WordFrequency>
+            {
+                new WordFrequency(new BitArray(new [] { false, true, true, false})),
+                new WordFrequency(new BitArray(new [] { false, false, false, true })),
+                new WordFrequency(new BitArray(new [] { false, false, true, false })),
+                new WordFrequency(new BitArray(new [] { false, false, true, true })),
+                new WordFrequency(new BitArray(new [] { false, true, false, false })),
+                new WordFrequency(new BitArray(new [] { false, true, false, true }))
+            };
 
             List<WordFrequency> frequencies = parser.getFrequencyTable();
 
-            TestFileManager.DeleteFile();
+            Assert.IsTrue(TestUtils.AreWordsEqual(frequencies, expectedBits));
+            Assert.IsTrue(TestUtils.AreFrequenciesEqual(frequencies, expected));
+        }
 
-            Assert.AreEqual(expected[0], frequencies[0].Frequency);
-            Assert.AreEqual(expected[1], frequencies[1].Frequency);
-            Assert.AreEqual(expected[2], frequencies[2].Frequency);
-            Assert.AreEqual(expected[3], frequencies[3].Frequency);
-            Assert.AreEqual(expected[4], frequencies[4].Frequency);          
+        [TestMethod]
+        public void getFrequencyTable_wordSize3_CorrectTable()
+        {
+            TestFileUtilities.MakeFile("aaaabbbbccccddee");
+
+            int bitsWordLenght = 3;
+            var parser = new Parser(TestFileUtilities.path, bitsWordLenght);
+            var expectedFrequencies = new int[] { 8, 6, 4, 6, 3, 6, 9 };
+            var expectedRemainder = new BitArray(new[] { false, true });
+
+            var expectedBits = new List<WordFrequency>
+            {
+                new WordFrequency(new BitArray(new [] { false, true, true })),
+                new WordFrequency(new BitArray(new [] { false, false, false })),
+                new WordFrequency(new BitArray(new [] { false, true, false })),
+                new WordFrequency(new BitArray(new [] { true, true, false })),
+                new WordFrequency(new BitArray(new [] { true, false, true })),
+                new WordFrequency(new BitArray(new [] { true, false, false })),
+                new WordFrequency(new BitArray(new [] { false, false, true }))                
+            };
+
+            List<WordFrequency> frequencies = parser.getFrequencyTable();
+
+            BitArray remaider = parser.GetRemainingBits();
+
+            Assert.IsTrue((remaider[0] == expectedRemainder[0]) & (remaider[1] == expectedRemainder[1]));
+            Assert.IsTrue(TestUtils.AreFrequenciesEqual(frequencies, expectedFrequencies));
+            Assert.IsTrue(TestUtils.AreWordsEqual(frequencies, expectedBits));
         }
     }
 }

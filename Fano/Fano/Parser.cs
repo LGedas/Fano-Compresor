@@ -44,6 +44,8 @@ namespace Fano
         }
         public BitArray GetRemainingBits()
         {
+            bitWord.Word.Length = BitLocation;
+
             return bitWord.Word;
         }
 
@@ -73,25 +75,36 @@ namespace Fano
             }
         }
 
-        public List<WordFrequency> getFrequencyTable()
+        public List<WordFrequency> GetFrequencyTable()
         {
             using (var file = new FileReader(path))
             {
-                byte[] bytes;
+                byte[] bytes = file.Read();
 
-                bytes = file.Read();
-
-                while (0 < bytes.Length)
+                while(bytes.Any())
                 {
                     foreach (byte byteFromFile in bytes)
                     {
                         ParseByte(byteFromFile);
                     }
+
                     bytes = file.Read();
                 }
-            }   
-            
+            }
+
+            frequencies.Sort(Comparison);
+
             return frequencies;            
-        } 
+        }
+
+        public int Comparison(WordFrequency frequency1, WordFrequency frequency2)
+        {
+            if (frequency1.Frequency == frequency2.Frequency)
+            {
+                return 0;
+            }
+
+            return frequency1.Frequency < frequency2.Frequency ?  1 : -1;  
+        }
     }
 }

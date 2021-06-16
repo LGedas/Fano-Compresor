@@ -18,15 +18,9 @@ namespace Fano
             IncrementFrequency();            
         }
 
-        public void IncrementFrequency()
-        {
-            _frequency++;
-        }
+        public void IncrementFrequency() => _frequency++;
 
-        public int Frequency
-        { 
-            get { return _frequency; }            
-        }
+        public int Frequency => _frequency;
  
         public BitArray Word
         {

@@ -8,10 +8,7 @@ namespace Fano.Tests
     public class ParserTests
     {        
         [TestCleanup]
-        public void TestClean()
-        {
-            TestFileUtilities.DeleteFile();
-        }
+        public void TestClean() => TestFileUtilities.DeleteFile();
 
         [TestMethod]
         public void getFrequencyTable_wordSize8_CorrectTable()
@@ -31,6 +28,7 @@ namespace Fano.Tests
                 new WordFrequency(new BitArray(new [] { false, true, true, false, false, true, false, true }))
             };
 
+            parser.SetFrequencyTable();
             List<WordFrequency> frequencies = parser.GetFrequencyTable();
 
             Assert.IsTrue(TestUtils.AreWordsEqual(frequencies, expectedBits));
@@ -45,6 +43,7 @@ namespace Fano.Tests
             int bitsWordLenght = 4;
             var parser = new Parser(TestFileUtilities.path, bitsWordLenght);
             var expected = new int[] { 16, 4, 4, 4, 2, 2 };
+            var expextedRemainderLenght = 0;
 
             var expectedBits = new List<WordFrequency>
             {
@@ -56,8 +55,12 @@ namespace Fano.Tests
                 new WordFrequency(new BitArray(new [] { false, true, false, true }))
             };
 
+            parser.SetFrequencyTable();
             List<WordFrequency> frequencies = parser.GetFrequencyTable();
 
+            BitArray remainder = parser.Remainder;
+
+            Assert.AreEqual(remainder.Length, expextedRemainderLenght);
             Assert.IsTrue(TestUtils.AreWordsEqual(frequencies, expectedBits));
             Assert.IsTrue(TestUtils.AreFrequenciesEqual(frequencies, expected));
         }
@@ -83,12 +86,13 @@ namespace Fano.Tests
                 new WordFrequency(new BitArray(new [] { true, false, true })),
             };
 
+            parser.SetFrequencyTable();
             List<WordFrequency> frequencies = parser.GetFrequencyTable();
 
-            BitArray remaider = parser.GetRemainingBits();
+            BitArray remainder = parser.Remainder;
 
-            Assert.AreEqual(remaider.Length, expectedRemainder.Length);
-            Assert.IsTrue((remaider[0] == expectedRemainder[0]) & (remaider[1] == expectedRemainder[1]));
+            Assert.AreEqual(remainder.Length, expectedRemainder.Length);
+            Assert.IsTrue((remainder[0] == expectedRemainder[0]) & (remainder[1] == expectedRemainder[1]));
             Assert.IsTrue(TestUtils.AreFrequenciesEqual(frequencies, expectedFrequencies));
             Assert.IsTrue(TestUtils.AreWordsEqual(frequencies, expectedBits));
         }

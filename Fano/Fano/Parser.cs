@@ -9,11 +9,12 @@ namespace Fano
     {        
         private List<WordFrequency> frequencies;
         private WordFrequency bitWord;
+        private BitArray remainder;
         private const int byteSize = 8;
         private readonly int bitsWordSize;
-        private int _bitLocation;    
+        private int bitLocation;    
         private readonly string path;
-        
+
         public Parser(string path, int bitsWordSize)
         {
             this.path = path;
@@ -22,66 +23,17 @@ namespace Fano
             frequencies = new List<WordFrequency>();
         }
 
-        public int BitLocation
-        {
-            get { return _bitLocation; }
-        }
+        public BitArray Remainder => remainder;
 
-        public void SetBitLocation()
-        {
-            _bitLocation = (_bitLocation + 1) % bitsWordSize;
-        }
+        public List<WordFrequency> GetFrequencyTable() => frequencies;
 
-        public bool GetBit(byte byteFromFile, int position)
-        {
-            return Convert.ToBoolean((Convert.ToInt32(byteFromFile) >> (byteSize - 1 - position)) & 1);
-        }
-
-        public void InsertBit(byte byteFromFile, int position)
-        {
-            bitWord.Word[BitLocation] = GetBit(byteFromFile, position);
-            SetBitLocation();
-        }
-        public BitArray GetRemainingBits()
-        {
-            bitWord.Word.Length = BitLocation;
-
-            return bitWord.Word;
-        }
-
-        public void TryInsertWord()
-        {
-            WordFrequency word = frequencies.FirstOrDefault(word => Utilities.IsSequenceEqual(word, bitWord));
-
-            if (word != null)
-            {
-                word.IncrementFrequency();
-                return;
-            }
-
-            frequencies.Add(new WordFrequency(bitWord.Word));
-        }
-
-        public void ParseByte(byte byteFromFile)
-        {
-            for (int i = 0; i < byteSize; i++)
-            {
-                InsertBit(byteFromFile, i);
-
-                if (BitLocation == 0)
-                {
-                    TryInsertWord();
-                }
-            }
-        }
-
-        public List<WordFrequency> GetFrequencyTable()
+        public void SetFrequencyTable()
         {
             using (var file = new FileReader(path))
             {
                 byte[] bytes = file.Read();
 
-                while(bytes.Any())
+                while (bytes.Any())
                 {
                     foreach (byte byteFromFile in bytes)
                     {
@@ -94,17 +46,60 @@ namespace Fano
 
             frequencies.Sort(Comparison);
 
-            return frequencies;            
+            SetRemainder();
         }
 
-        public int Comparison(WordFrequency frequency1, WordFrequency frequency2)
+        private void SetRemainder()
+        {
+            remainder = bitWord.Word;
+            remainder.Length = bitLocation;
+        }
+
+        private int Comparison(WordFrequency frequency1, WordFrequency frequency2)
         {
             if (frequency1.Frequency == frequency2.Frequency)
             {
                 return 0;
             }
 
-            return frequency1.Frequency < frequency2.Frequency ?  1 : -1;  
+            return frequency1.Frequency < frequency2.Frequency ? 1 : -1;
         }
+
+        private void ParseByte(byte byteFromFile)
+        {
+            for (int i = 0; i < byteSize; i++)
+            {
+                InsertBit(byteFromFile, i);
+
+                if (bitLocation == 0)
+                {
+                    TryInsertWord();
+                }
+            }
+        }
+
+        private void InsertBit(byte byteFromFile, int position)
+        {
+            bitWord.Word[bitLocation] = GetBit(byteFromFile, position);
+
+            SetBitLocation();
+        }
+
+        private void TryInsertWord()
+        {
+            WordFrequency word = frequencies.FirstOrDefault(word => Utilities.IsSequenceEqual(word, bitWord));
+
+            if (word != null)
+            {
+                word.IncrementFrequency();
+                return;
+            }
+
+            frequencies.Add(new WordFrequency(bitWord.Word));
+        }
+
+        private void SetBitLocation() => bitLocation = (bitLocation + 1) % bitsWordSize;
+
+        private bool GetBit(byte byteFromFile, int position) => Convert.ToBoolean((byteFromFile >> (byteSize - 1 - position)) & 1);        
     }
 }

@@ -8,10 +8,7 @@ namespace Fano.Tests
     public class FileReaderTests
     {
         [TestCleanup]
-        public void TestClean()
-        {
-            TestFileUtilities.DeleteFile();
-        }
+        public void TestClean() => TestFileUtilities.DeleteFile();
 
         [TestMethod]
         public void Constructor_FilePath_NotNull()

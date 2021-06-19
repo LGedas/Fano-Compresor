@@ -44,7 +44,11 @@ namespace Fano
                 }
             }
 
+<<<<<<< HEAD
             frequencies.Sort(Comparison);
+=======
+            frequencies.Sort(OrderDescending);
+>>>>>>> b88d428 (new class to generate word-code dictionary)
 
             SetRemainder();
         }
@@ -55,7 +59,11 @@ namespace Fano
             remainder.Length = bitLocation;
         }
 
+<<<<<<< HEAD
         private int Comparison(WordFrequency frequency1, WordFrequency frequency2)
+=======
+        private int OrderDescending(WordFrequency frequency1, WordFrequency frequency2)
+>>>>>>> b88d428 (new class to generate word-code dictionary)
         {
             if (frequency1.Frequency == frequency2.Frequency)
             {

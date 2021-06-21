@@ -7,58 +7,59 @@ namespace Fano
 {
     public class FanoAlgorithm
     {
-        private readonly List<WordFrequency> table;
-        private Dictionary<int, BitArray> codes;
+        private readonly List<WordFrequency> wordFrequency;
+        private Dictionary<int, BitArray> _bitsByInt;
+        private readonly int[] keys;
 
-        public FanoAlgorithm(List<WordFrequency> table)
+        public FanoAlgorithm(List<WordFrequency> wordFrequency)
         {
-            this.table = table;
-            codes = new Dictionary<int, BitArray>();
+            this.wordFrequency = wordFrequency;
+            _bitsByInt = new Dictionary<int, BitArray>();
+            keys = new int [wordFrequency.Count];
 
-            InitializeDictionary();
+            _bitsByInt = Enumerable.Range(0, wordFrequency.Count).ToDictionary(x => GetIntFromBitArray(x), x => (BitArray)null);
+            keys = Enumerable.Range(0, wordFrequency.Count).Select(x => GetIntFromBitArray(x)).ToArray();         
         }
 
-        public void Start(int left, int right)
-        {              
+        //TO DO: write a better name.
+        public void Start() => GetBitsByInt(0, _bitsByInt.Count - 1);
+
+        public void GetBitsByInt(int left, int right)
+        {
             if (left == right)
             {
-                return;
-            }             
-
-            if (left == right - 1)
-            {
-                CodeAppendBit(left, false);
-                CodeAppendBit(right, true);
-
                 return;
             }
 
             int index = SplitIndex(left, right);
 
-            for (int i = left; i <= index; i++)
-            {
-                CodeAppendBit(i, false);
-            }
+            AddBits(left, index, right);
 
-            for (int i = index + 1; i <= right; i++)
-            {
-                CodeAppendBit(right, true);
-            }          
-
-            Start(left, index);
-            Start(index + 1, right);
+            GetBitsByInt(left, index);
+            GetBitsByInt(index + 1, right);
         }
 
-        public int TotalFrequency(int left, int right)
-        {
-            int sum = 0;
-
+        //TO DO: needs a better name.
+        public void AddBits(int left, int index, int right)
+        {  
             for (int i = left; i <= right; i++)
             {
-                sum += table[i].Frequency;
+                bool value = (i <= index) ? false : true;
+                CodeAppendBit(i, value);                 
             }
-            
-            return sum;
+        }
+
+        //TO DO: needs a better name.
+        public void CodeAppendBit(int index, bool value)
+        {
+            if (_bitsByInt[keys[index]] == null)
+            {
+                _bitsByInt[keys[index]] = new BitArray(new[] { value });
+                return;
+            }
+
+            _bitsByInt[keys[index]].Length++;
+            _bitsByInt[keys[index]].Set(_bitsByInt[keys[index]].Length - 1, value);
         }
 
         public int SplitIndex(int left, int right)
@@ -66,14 +67,15 @@ namespace Fano
             int maxArraySum = TotalFrequency(left, right);
 
             int index = left;
-
             int arraySum = 0;
-            int nextArraySum, difference, nextDifference;
+            int nextArraySum = 0;
+            int difference = 0;
+            int nextDifference = 0;
 
             do
             {
-                arraySum += table[index].Frequency;
-                nextArraySum = arraySum + table[index + 1].Frequency;
+                arraySum += wordFrequency[index].Frequency;
+                nextArraySum = arraySum + wordFrequency[index + 1].Frequency;
 
                 difference = Math.Abs(arraySum - (maxArraySum - arraySum));
                 nextDifference = Math.Abs(nextArraySum - (maxArraySum - nextArraySum));
@@ -84,30 +86,31 @@ namespace Fano
             return index - 1;
         }
 
-        private void InitializeDictionary()
+        public int TotalFrequency(int left, int right)
         {
-            for (int i = 0; i < table.Count; i++)
-            {
-                codes.Add(GetIntFromBitArray(i), null);
-            } 
-        }
-
-        public int GetIntFromBitArray(int index)
-        {            
             int sum = 0;
 
-            foreach (bool bit in table[index].Word)
+            for (int i = left; i <= right; i++)
             {
-                sum = sum * 2 + (bit ? 1 : 0);
+                sum += wordFrequency[i].Frequency;
             }
 
             return sum;
         }
 
-        public void CodeAppendBit(int index, bool value)
+        //TO DO: needs a better name.
+        public int GetIntFromBitArray(int index)
         {
-            codes[GetIntFromBitArray(index)].Length++;
-            codes[GetIntFromBitArray(index)].Set(codes[GetIntFromBitArray(index)].Length - 1, value);
-        }
+            int sum = 0;
+
+            foreach (bool bit in wordFrequency[index].Word)
+            {
+                sum = sum * 2 + (bit ? 1 : 0);
+            }
+
+            return sum;
+        }  
+
+        public Dictionary<int, BitArray> BitsByInt => _bitsByInt;        
     }
 }

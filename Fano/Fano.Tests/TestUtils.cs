@@ -40,5 +40,23 @@ namespace Fano.Tests
 
             return true;
         }
+
+        public static bool AreBitArraysEqual(BitArray expected, BitArray actual)
+        {
+            if (actual.Count != expected.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                if (actual.Get(i) != expected.Get(i))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

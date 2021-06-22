@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 namespace Fano.Tests
 {
@@ -73,12 +74,9 @@ namespace Fano.Tests
 
         [TestMethod]
         public void Start_FrequencyTable_CorrectDictionary()
-        {
-            var expectedCount = 7;
-            var expectedLenght = new int[] { 3, 2, 3, 3, 3, 3, 3 };
-
-            //TO DO: Assert for values, clean unnecesary Assert lines.
-            var expectedsBits = new List<BitArray>() 
+        {            
+            var expectedKeys = new int[] { 1, 3, 0, 6, 4, 2, 5 };
+            var expectedBits = new List<BitArray>
             { 
                 new BitArray(new[] { false, false }),
                 new BitArray(new[] { false, true, false }),
@@ -87,28 +85,29 @@ namespace Fano.Tests
                 new BitArray(new[] { true, false, true }),
                 new BitArray(new[] { true, true, false }),
                 new BitArray(new[] { true, true, true })
-            };
+            };            
 
             parser.SetFrequencyTable();
             FanoAlgorithm fano = new FanoAlgorithm(parser.GetFrequencyTable());
-            fano.Start();
+            fano.Start();  
 
-            Assert.AreEqual(expectedCount, fano.BitsByInt.Count);
-            Assert.IsTrue(fano.BitsByInt.ContainsKey(0));
-            Assert.IsTrue(fano.BitsByInt.ContainsKey(1));
-            Assert.IsTrue(fano.BitsByInt.ContainsKey(2));
-            Assert.IsTrue(fano.BitsByInt.ContainsKey(3));
-            Assert.IsTrue(fano.BitsByInt.ContainsKey(4));
-            Assert.IsTrue(fano.BitsByInt.ContainsKey(5));
-            Assert.IsTrue(fano.BitsByInt.ContainsKey(6));
+            Assert.AreEqual(expectedKeys.Count(), fano.BitsByInt.Count);
 
-            Assert.AreEqual(expectedLenght[0], fano.BitsByInt[0].Count);
-            Assert.AreEqual(expectedLenght[1], fano.BitsByInt[1].Count);
-            Assert.AreEqual(expectedLenght[2], fano.BitsByInt[2].Count);
-            Assert.AreEqual(expectedLenght[3], fano.BitsByInt[3].Count);
-            Assert.AreEqual(expectedLenght[4], fano.BitsByInt[4].Count);
-            Assert.AreEqual(expectedLenght[5], fano.BitsByInt[5].Count);
-            Assert.AreEqual(expectedLenght[6], fano.BitsByInt[6].Count);
+            Assert.IsTrue(fano.BitsByInt.ContainsKey(expectedKeys[0]));
+            Assert.IsTrue(fano.BitsByInt.ContainsKey(expectedKeys[1]));
+            Assert.IsTrue(fano.BitsByInt.ContainsKey(expectedKeys[2]));
+            Assert.IsTrue(fano.BitsByInt.ContainsKey(expectedKeys[3]));
+            Assert.IsTrue(fano.BitsByInt.ContainsKey(expectedKeys[4]));
+            Assert.IsTrue(fano.BitsByInt.ContainsKey(expectedKeys[5]));
+            Assert.IsTrue(fano.BitsByInt.ContainsKey(expectedKeys[6]));
+
+            Assert.IsTrue(TestUtils.AreBitArraysEqual(expectedBits[0], fano.BitsByInt[expectedKeys[0]]));
+            Assert.IsTrue(TestUtils.AreBitArraysEqual(expectedBits[1], fano.BitsByInt[expectedKeys[1]]));
+            Assert.IsTrue(TestUtils.AreBitArraysEqual(expectedBits[2], fano.BitsByInt[expectedKeys[2]]));
+            Assert.IsTrue(TestUtils.AreBitArraysEqual(expectedBits[3], fano.BitsByInt[expectedKeys[3]]));
+            Assert.IsTrue(TestUtils.AreBitArraysEqual(expectedBits[4], fano.BitsByInt[expectedKeys[4]]));
+            Assert.IsTrue(TestUtils.AreBitArraysEqual(expectedBits[5], fano.BitsByInt[expectedKeys[5]]));
+            Assert.IsTrue(TestUtils.AreBitArraysEqual(expectedBits[6], fano.BitsByInt[expectedKeys[6]]));
         }
     }
 }
